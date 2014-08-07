@@ -289,6 +289,7 @@ namespace ZCSyncTcpServer
         private void button_Clear_Click(object sender, RoutedEventArgs e)
         {
             listBox_MsgView.Items.Clear();
+            你
         }
     }
 }
