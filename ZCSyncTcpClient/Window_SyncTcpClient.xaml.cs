@@ -15,16 +15,13 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 
-namespace ZCSyncTcpServer
+namespace ZCSyncTcpClient
 {
     /// <summary>
     /// Window1.xaml 的交互逻辑
     /// </summary>
-    public partial class Window_SyncTcpServer : Window
+    public partial class Window_SyncTcpClient : Window
     {
-        private IPAddress localAddress;
-        private const int port = 9002;
-        private TcpListener tcpListener;
         private TcpClient tcpClient;
         private NetworkStream networkStream;
         private BinaryReader br;
@@ -44,16 +41,16 @@ namespace ZCSyncTcpServer
         //重置消息文本
         private delegate void ResetMsgTxtCallBack();
         private ResetMsgTxtCallBack resetMsgTxtCallBack;
-
-        public Window_SyncTcpServer()
+        
+        public Window_SyncTcpClient()
         {
             InitializeComponent();
-            shwMsgforViewCallBack=new ShwMsgforViewCallBack(ShwMsgforView);
+            shwMsgforViewCallBack = new ShwMsgforViewCallBack(ShwMsgforView);
             shwStatusInfoCallBack = new ShwStatusInfoCallBack(ShwStatusInfo);
             shwProgressProcCallBack = new ShwProgressProcCallBack(ShwProgressProc);
             resetMsgTxtCallBack = new ResetMsgTxtCallBack(ResetMsgTxt);
 
-            localAddress = IPAddress.Any;
+
             textBox_SendCount.Text = sendCount.ToString();
             textBox_ReceiveCount.Text = receiveCount.ToString();
             progressBar_Proc.Minimum = 0;
@@ -68,10 +65,10 @@ namespace ZCSyncTcpServer
             }
             else
             {
-                 listBox_MsgView.Items.Add(str);
+                listBox_MsgView.Items.Add(str);
                 //listBox_MsgView.ScrollIntoView(listBox_MsgView.Items[listBox_MsgView.Items.Count - 1]);
             }
-            
+
         }
 
         private void ShwStatusInfo(string str)
@@ -110,7 +107,7 @@ namespace ZCSyncTcpServer
             }
             else
             {
-                textbox_Msg.Text  = "";
+                textbox_Msg.Text = "";
                 textbox_Msg.Focus();
             }
 
@@ -118,42 +115,58 @@ namespace ZCSyncTcpServer
 
         private void button_Start_Click(object sender, RoutedEventArgs e)
         {
-            tcpListener = new TcpListener(localAddress, port);
-            tcpListener.Start();
             progressBar_Proc.Maximum = 100;
             progressBar_Proc.Value = 0;
-            Thread threadAccept = new Thread(AcceptClientConnect);
-            threadAccept.IsBackground = true;
-            threadAccept.Start();
+            Thread threadConnect = new Thread(ConnectoServer);
+            threadConnect.IsBackground = true;
+            threadConnect.Start();
         }
 
-        private void AcceptClientConnect()
+        private void ConnectoServer()
         {
-            ShwStatusInfo("[" + localAddress + ":" + port + "]侦听...");
-            //DateTime nowtime = DateTime.Now;
-            //while (nowtime.AddSeconds(1) > DateTime.Now) { }
-            Thread.Sleep(1000);
             try
             {
-                ShwStatusInfo("等待连接...");
-                ShwProgressProc(1);
-                tcpClient = tcpListener.AcceptTcpClient();
-                ShwProgressProc(100);
-                if (tcpClient != null)
+                shwStatusInfoCallBack("正在连接...");
+                IPHostEntry remoteHost = Dns.GetHostEntry(textBox_SrvIp.Text);
+                tcpClient = new TcpClient();
+                shwProgressProcCallBack(1);
+                tcpClient.Connect(remoteHost.HostName,int.Parse(textBox_Port.Text));
+                shwProgressProcCallBack(100);
+                Thread.Sleep(1000);
+                if(tcpClient!=null)
                 {
-                    ShwStatusInfo("接受了一个连接。");
-                    networkStream = tcpClient.GetStream();
-                    br = new BinaryReader(networkStream);
-                    bw = new BinaryWriter(networkStream);
+                    shwStatusInfoCallBack("连接成功");
+                    networkStream=tcpClient.GetStream();
+                    br=new BinaryReader(networkStream);
+                    bw=new BinaryWriter(networkStream);
                 }
             }
             catch
             {
-                ShwStatusInfo("停止侦听。");
+                shwStatusInfoCallBack("连接失败！");
                 Thread.Sleep(1000);
-                ShwProgressProc(0);
-                ShwStatusInfo("就绪");
+                shwProgressProcCallBack(0);
+                shwStatusInfoCallBack("就绪");
             }
+        }
+
+        private void button_Disconnect_Click(object sender, RoutedEventArgs e)
+        {
+            if (br != null)
+            {
+                br.Close();
+            }
+            if (bw != null)
+            {
+                bw.Close();
+            }
+            if (tcpClient != null)
+            {
+                tcpClient.Close();
+            }
+            label_Info.Content = "连接断开";
+            progressBar_Proc.Value = 0;
+
         }
 
         private void button_Receive_Click(object sender, RoutedEventArgs e)
@@ -162,7 +175,6 @@ namespace ZCSyncTcpServer
             progressBar_Proc.Maximum = receiveCount;
             progressBar_Proc.Value = 0;
             Thread threadReceive = new Thread(ReceiveMessage);
-            threadReceive.IsBackground = true;
             threadReceive.Start();
         }
 
@@ -196,14 +208,10 @@ namespace ZCSyncTcpServer
                     }
                     ShwStatusInfo("连接断开");
                     ShwProgressProc(0);
-                    Thread.Sleep(2000);
-                    Thread threadAccept = new Thread(AcceptClientConnect);
-                    threadAccept.IsBackground = true;
-                    threadAccept.Start();
                     break;
                 }
             }
-            ShwStatusInfo("接收了"+receiveCount + "条消息。");
+            ShwStatusInfo("接收了" + receiveCount + "条消息。");
         }
 
         private void button_Send_Click(object sender, RoutedEventArgs e)
@@ -244,10 +252,6 @@ namespace ZCSyncTcpServer
                     }
                     ShwStatusInfo("连接断开");
                     ShwProgressProc(0);
-                    Thread.Sleep(2000);
-                    Thread threadAccept = new Thread(AcceptClientConnect);
-                    threadAccept.IsBackground = true;
-                    threadAccept.Start();
                     break;
                 }
             }
@@ -256,34 +260,6 @@ namespace ZCSyncTcpServer
             ShwProgressProc(0);
 
             resetMsgTxtCallBack();
-        }
-
-        private void button_Stop_Click(object sender, RoutedEventArgs e)
-        {
-            tcpListener.Stop();
-        }
-
-        private void button_Disconnect_Click(object sender, RoutedEventArgs e)
-        {
-            if (br != null)
-            {
-                br.Close();
-            }
-            if (bw != null)
-            {
-                bw.Close();
-            }
-            if (tcpClient != null)
-            {
-                tcpClient.Close();
-            }
-            label_Info.Content = "连接断开";
-            progressBar_Proc.Value = 0;
-            Thread.Sleep(2000);
-            Thread threadAccept = new Thread(AcceptClientConnect);
-            threadAccept.IsBackground = true;
-            threadAccept.Start();
-
         }
 
         private void button_Clear_Click(object sender, RoutedEventArgs e)
