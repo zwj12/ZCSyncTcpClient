@@ -1,0 +1,52 @@
+﻿<Window x:Class="ZCSyncTcpClient.Window_SyncTcpClient"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="TCP客户进程（同步）" Height="356" Width="532">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition  Height="100"/>
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <ListBox  Name="listBox_MsgView" />
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition  />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Label  Name="label1" Margin="2">发</Label>
+            <Label Grid.Column="2" Name="label2" Margin="2">收</Label>
+            <TextBox Grid.Column="1" Name="textBox_SendCount" Margin="2" />
+            <TextBox Grid.Column="3" Name="textBox_ReceiveCount" Margin="2" />
+            <Button Grid.Column="4" Name="button_Clear" Margin="2" Click="button_Clear_Click">清空</Button>
+            <Button Grid.Column="5" Name="button_Receive" Margin="2" Click="button_Receive_Click">接收</Button>
+            <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="2" Name="textbox_Msg"/>
+            <Button Grid.Row="1" Grid.Column="5" Margin="2" Name="button_Send" Click="button_Send_Click">发送</Button>
+            
+            <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="2" Name="textBox_SrvIp">zwj-pc</TextBox>
+            <Label Grid.Row="2" Grid.Column="2" Margin="2" >:</Label>
+            <TextBox Grid.Row="2" Grid.Column="3" Margin="2" Name="textBox_Port">9002</TextBox>
+            <Button Grid.Row="2" Grid.Column="4" Margin="2" Name="button_Connect" Click="button_Start_Click">连接</Button>
+            <Button Grid.Row="2" Grid.Column="5" Margin="2" Name="button_Disconnect" Click="button_Disconnect_Click">断开</Button>
+        </Grid>
+        <StatusBar Name="statusBar1" Grid.Row="2" VerticalAlignment="Bottom" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition  Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Margin="2" Name="label_Info">就绪</Label>
+                <ProgressBar Grid.Row="0" Grid.Column="1" Margin="2" Width="200" Name="progressBar_Proc" />
+            </Grid>
+        </StatusBar>
+    </Grid>
+</Window>
