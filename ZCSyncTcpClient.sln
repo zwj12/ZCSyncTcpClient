@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZCSyncTcpClient", "ZCSyncTcpClient\ZCSyncTcpClient.csproj", "{4724C26D-0EDA-47A0-9B99-F37B9F49ADB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZCSyncTcpServer", "ZCSyncTcpServer\ZCSyncTcpServer.csproj", "{08D764F7-E41C-4926-8D11-A8BFA4A6BF5F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4724C26D-0EDA-47A0-9B99-F37B9F49ADB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4724C26D-0EDA-47A0-9B99-F37B9F49ADB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4724C26D-0EDA-47A0-9B99-F37B9F49ADB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4724C26D-0EDA-47A0-9B99-F37B9F49ADB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08D764F7-E41C-4926-8D11-A8BFA4A6BF5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08D764F7-E41C-4926-8D11-A8BFA4A6BF5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08D764F7-E41C-4926-8D11-A8BFA4A6BF5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08D764F7-E41C-4926-8D11-A8BFA4A6BF5F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
