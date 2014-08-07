@@ -28,6 +28,8 @@ namespace ZCSyncTcpClient
         private BinaryWriter bw;
         private int sendCount = 1;
         private int receiveCount = 10;
+        private IPHostEntry remoteHost ;
+        private int port;
 
         //显示消息
         private delegate void ShwMsgforViewCallBack(string str);
@@ -117,6 +119,8 @@ namespace ZCSyncTcpClient
         {
             progressBar_Proc.Maximum = 100;
             progressBar_Proc.Value = 0;
+            remoteHost = Dns.GetHostEntry(textBox_SrvIp.Text);
+            port = int.Parse(textBox_Port.Text);
             Thread threadConnect = new Thread(ConnectoServer);
             threadConnect.IsBackground = true;
             threadConnect.Start();
@@ -127,10 +131,9 @@ namespace ZCSyncTcpClient
             try
             {
                 shwStatusInfoCallBack("正在连接...");
-                IPHostEntry remoteHost = Dns.GetHostEntry(textBox_SrvIp.Text);
                 tcpClient = new TcpClient();
                 shwProgressProcCallBack(1);
-                tcpClient.Connect(remoteHost.HostName,int.Parse(textBox_Port.Text));
+                tcpClient.Connect(remoteHost.HostName,port );
                 shwProgressProcCallBack(100);
                 Thread.Sleep(1000);
                 if(tcpClient!=null)
